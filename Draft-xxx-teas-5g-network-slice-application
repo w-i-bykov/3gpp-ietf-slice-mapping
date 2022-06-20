@@ -1,0 +1,609 @@
+Draft-xxx-teas-5g-network-slice-application
+
+Note: This document is an original merging version with 3 parts of contents which is differentiated with colors:
+-	draft-geng-teas-network-slice-mapping
+-	draft-contreras-teas-3gpp-ietf-slice-mapping
+-	draft-rokui-5g-ietf-network-slice
+
+Abstract
+   Network Slicing is one of the core features in 5G, which provides
+   different network service as .independent logical networks.  End-to-
+   end network slice consists of 3 major types of network segments:
+   Access Network (AN), Mobile Core Network (CN) and Transport Network
+   (TN).  This draft describes the procedure of mapping 5G end-to-end
+   network slice to transport network slice defined in IETF, includes
+   network slice identification mapping, network slice parameter mapping
+   and 5G IETF Network Slice NBI, in order to describe applicability of
+   IETF Network Slices in the Role of 5G Transport Network Slices in
+   Support of 5G End-to-end Network Slices. 
+
+1.	Introduction
+Driven by the new applications of 5G, the concept of network slicing
+   is defined to provide a logical network with specific capabilities
+   and characteristics.  Network slice contains a set of network
+   functions and allocated resources(e.g. computation, storage and
+   network resources).  According to [TS28530], a 5G end-to-end network
+   slice is composed of three major types network segments: Radio Access
+   Network (RAN), Transport Network (TN) and Mobile Core Network (CN).
+   Transport network is supposed to provide the required connectivity
+   between AN and CN, with specific performance commitment.  For each
+   end-to-end network slice, the topology and performance requirement
+   for transport network can be very different, which requests transport
+   network to have the capability of supporting multiple different
+   transport network slices.
+
+   The concept of IETF network slice is discussed in
+   [I-D.ietf-teas-ietf-network-slices].  In summary, an IETF Network
+   Slice is a logical network topology connecting a number of endpoints
+   using a set of shared or dedicated network resources that are used to
+   satisfy specific Service Level Objectives SLOs) and Service Level
+   Expectations (SLEs).
+
+   The realization of an IETF network slices in Transport network (TN)
+   could span multiple technology (e.g., IP/MPLS, Optical) and multiple
+   administrative domains.  Depending on the consumer's requirement, an
+   IETF network slice could be isolated from other concurrent IETF
+   network slices, in terms of data plane, control plane and management
+   plane.  The procedure for lifecycle of an end-to-end network slice
+   instance (i.e., creation, deletion, modificatinon, termination etc.)
+   is defined in [TS28531].  End-to-end network slicing provisioning is
+   specified in ETSI [ZSM003].
+
+   5G end-to-end slice is one of the important use cases for IETF
+   network slicing.  This draft describes the procedure of mapping 5G
+   end-to-end network slice to transport network slice defined in IETF,
+   includes network slice identification mapping, network slice
+   parameter mapping and 5G IETF Network Slice NBI, in order to describe
+   applicability of IETF Network Slices in the Role of 5G Transport
+   Network Slices in Support of 5G End-to-end Network Slices.
+
+2.	Terminologies
+Contents from section 2 of draft-geng-teas-network-slice-mapping
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+   The following terms are used in this document:
+   
+NSC: IETF Network Slice Controller
+
+   NSI: Network Slice Instance
+
+   NSSI: Network Slice Subnet Instance
+
+   S-NSSAI: Single Network Slice Selection Assistance Information
+
+   AN: Access Network
+
+   RAN: Radio Access Network
+
+   TN: Transport Network
+
+   CN: Mobile Core Network
+
+   DSCP: Differentiated Services Code Point
+
+   CSMF: Communication Service Management Function
+
+   NSMF: Network Slice Management Function
+
+   NSSMF: Network Slice Subnet Management Function
+
+
+3.	5G End-to-End Network Slice Introduction
+Contents from section 2 of draft-rokui-5g-ietf-network-slice
+
+To demonstrate the concept of 5G E2E network slice and the role of
+   various controllers, consider a typical 5G network shown in Figure 1
+   where a mobile network operator Y has two customers C1 and C2.  The
+   boundaries of administrative domain of the operator includes RAN,
+   transport, Core and mobile application domains.  Customer C1 and C2
+   request to have one or more logical independent E2E networks from UEs
+   (e.g. vehicle infotainment, mobile phone, IoT meters etc.) to the 5G
+   application servers, each with its own distinct SLO.
+
+   Each of these independent networks is called a 5G E2E network slice.
+   Each E2E network slice comprised of three componets RAN slice, IETF
+   network slice, and Core slice, respectively representing RAN,
+   transport and core domain portions of the slice.
+
+ 
+
+    Figure 1: High level architecture of a 5G end-to-end network slice
+
+   In Figure 1 mobile network operator Y has created four 5G E2E network
+   slices, NS1, NS2, NS3 and NS4, each with its own RAN, Core and IETF
+   network slices.  To create a RAN slice, the RAN network function s
+   such as eNB and gNB should be programmed to have a context for each
+   5G E2E network slice.  This context means that the RAN network
+   functions should allocate certain resources for each 5G E2E network
+   slice they belong to such as air interface, various schedulers,
+   policies and profiles to guarantee the SLO requirement for that
+   specific network slice.  By the same token, the Core slices will be
+   created which means that the mobile network operator will create the
+   context for each 5G E2E network slice on Core network functions.
+
+   For each 5G E2E network slice NS1, NS2, NS3 and NS4, after creation
+   of RAN and Core slices, they should be connected to each other and be
+   connected to mobile application servers to form the 5G E2E network
+   slice.  As defined in [I-D.nsdt-teas-ietf-network-slice-definition],
+   the set of connections are referred to "IETF Network Slices" and
+   specifically for 5G they are referred to "5G IETF Network Slices".
+
+   Referring to Figure 1, for each 5G E2E network slice, the following
+   5G IETF network Slices are needed:
+
+   o  5G IETF Network Slice 1: To connect RAN slice to Core slice in
+      Transport Network 1
+
+   o  5G IETF Network Slice 2: To connect Core slice to Mobile
+      Application Servers in Transport Network 2.  This might be needed
+      if the mobile application servers are connected to core network
+      functions through a transport network.  For example, if the Core
+      slice, which is realized on VNFs, and mobile application servers
+      are in the same data center, the 5G IETF Network Slice 2 is not
+      needed.  In this case the transport network 2 does not exist.
+
+   Note that as we will see later in Section 4.1, Section 4.2 and
+   Section 4.3, the number of "5G IETF network slices" might be more
+   than two which depends on some factors such as RAN deployment:
+
+   After creation of RAN, Core and 5G IETF network slices, they will be
+   associated together to form a working 5G E2E network slice identified
+   by an ID referred as to S-NSSAI.  Please refer to [TS.23.501-3GPP]
+   for more info on S-NSSAI.
+
+   To support fully automated enablement and assurance of 5G E2E network
+   slices, multiple controllers are needed to perform the life cycle of
+   5G E2E network slices in RAN, Core and Transport domains.  As shown
+   in Figure 2 each RAN, Core and Transport domain needs its own
+   controller called RAN Slice Controller, Core Slice Controller and
+   IETF Network Slice Controller.  In addition, an E2E network slice
+   orchestrator is needed to provide coordination and control of network
+   slices from an E2E perspective.
+
+   In summary, a 5G E2E network slice will involve several domains, each
+   with its own controller; 5G RAN, 5G Core and transport domains need
+   to be coordinated in order to deliver an E2E mobile service.  Note
+   that in this context a service is not an IP/MPLS service but rather
+   customer facing services such as CCTV service, eMBB service,
+   Infotainment service and so on.
+
+ 
+
+       Figure 2: Various controllers for 5G end-to-end network slice
+
+Section 3 of draft-geng-teas-network-slice-mapping
+
+The following figure illustrates a typical mobile network with three
+   5G e2e network slices.  Each e2e network slice contains AN slice, CN
+   slice and one or more IETF network Slices. 3GPP identifies each e2e
+   network slice using an integer called S-NSSAI.  In Figure-1 there are
+   three instances of e2e network slices which are identified by S-NSSAI
+   01111111, 02222222 and 02333333, respectively.  Each instance of e2e
+   network slice contains AN slice, CN Slice and one or more IETF
+   network slices.  For example, e2e network slice 01111111 has AN Slice
+   instance 4, CN Slice instance 1 and IETF network slice 6.  Note that
+   3GPP does not cover the IETF network slice.  See
+   [I-D.ietf-teas-ietf-network-slices] for details of IETF network
+   slice.
+
+   Note that 3GPP uses the terms NSI and NSSI which are a set of network
+   function and required resources (e.g. compute, storage and networking
+   resources) which corresponds to network slice Instance, whereas
+   S-NSSAI is an integer that identifies the e2e network slice.
+ 
+
+   Figure 1 5G End-to-End Network Slice and its components
+
+
+   Section 4 of draft-contreras-teas-3gpp-ietf-slice-mapping
+
+The IETF Network Slice (NS) service is defined in
+   [I-D.ietf-teas-ietf-network-slices] as a set of connections between a
+   number of CEs, with that connections having specific Service Level
+   Objectives (SLOs) and Service Level Expectations (SLEs) over a common
+   underlay network, with the traffic of one customer being separated
+   from another.  The concept of IETF network slice is conceived as
+   technology agnostic.
+
+   The IETF NS service is specified in terms of the set of endpoints
+   (from CE perspective) connected to the slice, the type of
+   connectivity among them, and a set of SLOs and SLEs for each
+   connectivity construct.
+
+   In [I-D.ietf-teas-ietf-network-slice-nbi-yang] the endpoints are
+   described by an identifier, with some metrics associated to the
+   connections among them as well as certain policies (e.g., rate limits
+   for incoming and outgoing traffic).
+
+
+4.	Draft scope
+Start with basic contents, growing on top of that (for example 5G E2E network slicing introduction, applying IETF network slice in 5G network slice , including structure, procedure, parameter, NBI and so on)
+
+Some possible further points:
+	· Packet switching instantiation with any of the existing models?
+	· Do we stay at slice request or also cover one (or more) example(s) of realization?
+	· Gap identification 
+	· Proposal for new solutions (identified at this time so far)
+	· Provide internal (e.g. towards framework, NBI, etc) and external (e.g. 3GPP) feedback
+etc
+
+5.	Network Slice Mapping Structure
+Section 4 from draft-geng-teas-network-slice-mapping
+
+Referring to 3GPP TR 28.801, the management of 5G e2e network slices
+   from 3GPP view is shown in Figure-2(A).  Figure-2(B) illustrates the
+   view of IETF and how it maps to 3GPP network slice management.  In
+   particular, the IETF network slice controller (NSC) is equivalent to
+   3GPP TN NSSMF and functional block "Consumer" at IETF is equivalent
+   to 3GPP NSMF.
+
+
+Figure-2 Relation between IETF and 3GPP Network Slice management
+
+   The following figure shows the necessary elements for mapping end-to-
+   end network slice into IETF network slices.
+
+ 
+Figure-3 5G E2E Network Slice Mapping Structure
+  
+The following network slice related identifiers in management plane,
+   control plane and data(user) plane play an important role in end-to-
+   end network slice mapping.
+
+   *  Single Network Slice Selection Assistance Information(S-NSSAI):
+      The end-to-end network slice identifier, which is defined in
+      [TS23501]; S-NSSAI is used during 3GPP network slice signalling
+      process.
+
+   *  IETF Network Slice Identifier: An identifier allocated by IETF
+      Neetwork Slice Controller (NSC) in management plane.  In data
+      plane, IETF Network Slice Identifier may be instantiated with
+      existing data plane identifiers and doesn't necessarily require
+      new encapsulation.
+
+   *  IETF Network Slice Interworking Identifier: Data-plane network
+      slice identifier which is used for mapping the end-to-end network
+      slice traffic to specific IETF network slice.  The IETF Network
+      Slice Interworking Identifier is a new concept introduced by this
+      draft, which may be instantiated with existing data plane
+      identifiers and doesn't necessarily require new encapsulation.
+
+   The relationship between these identifiers are specifies in the
+   following sections.
+
+Section 4.4 of draft-rokui-5G-network-slice
+
+   As discussed in [I-D.nsdt-teas-ietf-network-slice-definition], an
+   IETF network slice contains one or more connections between various
+   network functions, application and devices.  These connections can be
+   grouped into various Connection Groups where each group has its own
+   SLA/SLO.
+
+  To further explore this concept in 5G E2E network slicing, consider
+   Figure 7, where the details of 5G IETF network slice INS_1 introduced
+   in Figure 4 is illustrated.  The 5G IETF network slice INS_1 is
+   between 5G RAN and Core slices and has multiple connections between
+   5G RAN network functions BBU1 and BBU2 and 5G Core network functions
+   AMF1 and UPF1.  In particular, it contains the following connection
+   groups, each with its own SLO where SLO-C and SLO-U might be
+   different (e.g. they might be control and user plans SLOs):
+   o  "Connection group C" connects BBU1 and BBU2 to AMF1 with SLO-C
+   o  "Connection group U" connects BBU1 and BBU2 to UPF1 with SLO-U
+
+   The combination of two connection groups will form the 5G IETF
+   network slice INS_1.  Note that the definition of 5G IETF network
+   slice INS_1 does not specify how these connections should be realized
+   in transport network 1.  Although it is optionally possible, it is
+   not necessarily mandatory for the definition of a 5G IETF network
+   slice to state which technology (e.g.  IP, MPLS, Optics, PON etc.) or
+   tunnel type (e.g.  RSVP-TE, SR-TE etc.) should be employed for
+   realization.  As discussed in
+   [[I-D.nsdt-teas-ietf-network-slice-definition], any of these
+   technologies may be used by the IETF Network Slice Controller (NSC)
+   to realize an IETF network slice.
+
+   In summary, a 5G IETF network slice is a distinct set of technology-
+   agnostic connection groups between various 5G network functions, 5G
+   devices or 5G applications each with its own deterministic SLO which
+   can be realized by any suitable technology, tunnel type and service
+   type.
+
+ 
+Figure 7: Details of 5G IETF Network Slice as a set of Connection Groups
+
+Section 5 of draft-contreras-teas-3gpp-ietf-slice-mapping
+ 
+At the time of provisioning a 3GPP slice, it is required to provide
+   slice connectivity constructs by means of IETF network slices.  Then
+   it is necessary to bind two different endpoints, as depicted in
+   Figure 2:
+
+   o  Mapping of EP_Transport (as defined by [TS28.541]) to the endpoint
+      at the CE side of the IETF network slice.  This is necessary
+      because the IETF Network Slice Controller (NSC) will receive as
+      input for the IETF network slice service the set of endpoints at
+      CE side to be interconnected.
+
+   o  Mapping of the endpoints at both CE and PE side.  The endpoint at
+      PE side should be elicited by some means by the NSC, in order to
+      establish and set up the connectivity construct intended for the
+      customer slice request, according to the SLOs and SLEs received
+      from the higher level system.
+
+ 
+Figure 2: Title to be added
+
+6.	3GPP Network Slice Mapping Parameters
+Section 3 of draft-contreras-teas-3gpp-ietf-slice-mapping
+
+   The network slice concept was present in 3GPP specifications from the
+   first 5G release (Rel-15).  As captured in [TS23.501], a network
+   slice represents a logical network providing specific network
+   capabilities and network characteristics.
+
+   To make slicing a reality, every technical domain is split into one
+   or more logical network partitions, each referred to as a network
+   slice subnet.  The definition of multiple slice subnets on a single
+   domain allows this segment to provide differentiated behaviors, in
+   terms of functionality and/or performance.  The stitching of slice
+   subnets across the RAN, CN and TN results in the definition of
+   network slices.
+
+   From a management viewpoint, the concept of network slice subnet
+   represents an independently manageable yet composable portion of a
+   network slice.  The rules for the definition of network slice subnets
+   and their composition into network slices are detailed in the 5G
+   Network Resource Model (NRM) [TS28.541], specifically in the Network
+   Slice NRM fragment.  This fragment captures the information model of
+   5G network slicing, which specifies the relationships between
+   different slicing related managed entities, each represented as a
+   separate Information Object Class (IOC).  An IOC captures the
+   semantics and attributes of a manageable entity; in other words, it
+   defines the class based on which instances (objects) from this entity
+   can be created.  In the model, we have four different IOCs:
+
+   o  NetworkSlice IOC, representing a network slice.  This IOC is
+      associated with one or more ServiceProfiles, each representing the
+      requirements of a particular service.  The 1:N relationship of
+      NetworkSlice IOC with the ServiceProfile is because one network
+      slice can host multiple services, as long as they do not impose
+      conflicting requirements.
+
+   o  NetworkSliceSubnet IOC, associated with a network slice subnet.
+      This IOC is associated with one or more SliceProfiles.
+
+   o  ManagedFunction IOC, which represents a 5G network function.
+
+   o  EP_Transport IOC, which represents an interface associated with
+      transport network level information, e.g., transport address,
+      reachability information, and QoS profiles.
+
+   For the transport related part of a network slice, the key focus is
+   on EP_Transport IOC.  Instances of this IOC servesto instantiate 3GPP
+   interfaces which are needed to support Network Slicing and to define
+   Network Slice transport resources within the 5G NRM.  In a nutshell,
+   the EP_Transport IOC permits to define additional logical interfaces
+   for each slice instance of the 3GPP user plane.
+
+   According to [TS28.541], the EP_Transport construct on 3GPP side has
+   the following attributes:
+
+   o  ipAddress (mandatory): specifies the IP address asigned to the
+      logical transport interface.  It is used for transport routing.
+      Assigned uniquely per slice.  As per [TS28.541] IP address is
+      defined as an IPv4 address or an IPv6 address.  The concern is
+      that for the coherent networking, IP address should be assigned to
+      the interface with a network mask, to form an IPv4 or IPv6 prefix.
+
+   o  logicInterfaceInfo (mandatory): a set of parameters, which
+      includes logicInterfaceType and logicInterfaceId.  It specifies
+      the type and identifier of a logical interface.  It could be a
+      VLAN ID, MPLS Tag or Segment ID.  This is assigned uniquely per
+      slice.
+
+   o  nextHopInfo (optional): identifies the ingress transport node.
+      Each node can be identified by any combination of IP address of
+      next-hop router of transport network, system name, port name and
+      IP management addresses of transport nodes.
+
+   o  qosProfile (optional): specifies the set of QoS parameters which
+      are logically provisioned on both sides on a logical transport
+      interface.  This is assigned uniquely per slice.
+
+   o  epApplicationRef (mandatory): specifies the list of application
+      endpoints associated with the logical transport interface.  May be
+      assigned multiple per slice.  Used to maintain association with
+      corresponding 3GPP logical interface (NgU (N3), F1_U), to which
+      EP_Transport is related to.  Notice that one EP_Transport
+      (representing a logical transport interface) can be associated
+      with more than one multiple EP_Application (representing an
+      application endpoint of a 3GPP managed function), but also the
+      other way around.  While the first case captures the typical
+      situation, the second case can be used for the sake of resilience
+      or load balance in the transport network.
+
+   From the Transport Network domain side, these parameters define CE
+   transport interface configuration and shall be taken as an input to
+   the transport service model to create coherent Network Slice
+   transport service.
+
+   According to the [TS28.541] attributes in the EP_Transport, the IETF
+   Network Slice may be defined by the following combination of the
+   parameters:
+  
+
+   From the perspective of IETF Network Slcie realization, some of these
+   options could be realized in a straightforward manner while other
+   could require of advanced features (e.g., PBR, SRv6, FlexE, etc).
+
+
+Section 5 of draft-geng-teas-network-slice-mapping
+
+ 
+
+1.  NSMF receives the request from CSMF for allocation of a network
+   slice instance with certain characteristics.
+
+   2.  Based on the service requirement , NSMF acquires requirements for
+   the end-to-end network slice instance , which is defined in Service
+   Profile([TS28541] section 6.3.3).
+
+   3.  Based on Service Profile, NSMF identified the network function
+   and the required resources in AN, CN and TN networks.  It also
+   assigns the unique ID S-NSSAI.
+
+   4.  NSMF sends a request to AN NSSMF for creation of AN Slice.
+
+   5.  NSMF sends a request to CN NSSMF for creation of CN Slice.
+
+   6.  NSMF sends a request to IETF Network Slice Controller (NSC) for
+   creation of IETF Network Slice.  The request contains such attribute
+   such as endpoints, required SLA/SLO along with other IETF network
+   slice attributes.  It also cotains mapping informatin for IETF
+   Network Slice Interworking Identifier.
+
+   7.  NSC realizes the IETF network slice which satisfies the
+   requirement of IETF network slice between the specified endpoints
+   (AN/ CN edge nodes).  It assigns sliceID and send it to NSMF.
+
+   8.  NSMF has the mapping relationship between S-NSSAI and IETF
+   Network Slice ID;
+
+   9.  When the User Equipment (UE) appears, and during the 5G
+   signalling, it requests to be connected to specific e2e network slice
+   identified by S-NASSI.  Then a GTP tunnel (which is UDP/IP) will be
+   created.
+
+   10.  UE starts sending traffic in context of e2e network slice for
+   specific S-NASSI.
+
+   11.  In context of GTP tunnel, the AN edge nodes encapsulates the
+   packet with sliceIID according to the selected S-NSSAI ans send it to
+   the transport network.
+
+   12.  The transport network edge node receives the IP packet and
+   parses the sliceIID from the packet and maps the packet to the
+   corresponding IETF network slice.  It may encapsulate packet with
+   sliceID if needed (for example for enforcing QoS in transport
+   network).
+
+7.	Network Slice Mapping Procedure
+7.1	 Network Slice Mapping in Management Plane
+
+Section 5.1 of draft-geng-teas-network-slice-mapping
+
+   The transport network management Plane maintains the interface
+   between NSMF and TN NSSMF, which 1) guarantees that IETF network
+   slice could connect the AN and CN with specified characteristics that
+   satisfy the requirements of communication; 2) builds up the mapping
+   relationship between NSI identifier and TN NSSI identifier; 3)
+   maintains the end-to-end slice relevant functions;
+
+   Service Profile defined in[TS28541] represents the requirement of
+   end-to-end network slice instance in 5G network.  Parameters defined
+   in Service Profile include Latency, resource sharing level,
+   availability and so on.  How to decompose the end-to-end requirement
+   to the transport network requirement is one of the key issues in
+   Network slice requirement mapping.  GSMA(Global System for Mobile
+   Communications Association) defines the [GST] to indicate the network
+   slice requirement from the view of service provider.
+   [I-D.contreras-teas-slice-nbi] analysis the parameters of GST and
+   categorize the parameters into three classes, including the
+   attributes with direct impact on the IETF network slice definition.
+   It is a good start for selecting the transport network relevant
+   parameters in order to define Network Slice Profile for Transport
+   Network.  Network slice requirement parameters are also necessary for
+   the definition of transport network northbound interface.
+
+   Inside the TN NSSMF, it is supposed to maintain the attributes of the
+   IETF network slice.  If the attributes of an existing TN NSSI could
+   satisfy the requirement from TN Network Slice Profile, the existing
+   TN NSSI could be selected and the mapping is finished If there is no
+   existing TN NSSI which could satisfy the requirement, a new TN NSSI
+   is supposed to be created by the NSSMF with new attributes.
+
+   TN NSSI resource reservation should be considered to avoid over
+   allocation from multiple requests from NSMF (but the detailed
+   mechanism should be out of scope in the draft)
+
+   TN NSSMF sends the selected or newly allocated TN NSSI identifier to
+   NSMF.  The mapping relationship between NSI identifier and TN NSSI
+   identifier is maintained in both NSMF and TN NSSMF.
+
+   YANG data model for the Transport Slice NBI, which could be used by a
+   higher level system which is the Transport slice consumer of a
+   Transport Slice Controller (TSC) to request, configure, and manage
+   the components of a transport slices, is defined in
+   [I-D.wd-teas-transport-slice-yang].  The northbound Interface of IETF
+   network slice refers to [I-D.wd-teas-ietf-network-slice-nbi-yang].
+
+Section 5 of draft-contreras-teas-3gpp-ietf-slice-mapping
+
+7.1.1  Mapping EP_transport to IETF NS CE endpoints
+
+   The 3GPP Management system provides the EP_Transport IOC to extend
+   the slice awareness to the transport network.  The EP_Transport IOC
+   contains parameters as IP address, additional identifiers (i.e., vlan
+   tag, MPLS label, etc), and associated QoS profile.  This IOC is
+   related to the endpoints of the 3GPP managed functions
+   (EP_Application IOC).
+
+   The information captured in the EP_Transport IOC (3GPP concern)
+   should be translated into the CE related parameters (IETF concern).
+   There will be cases where such translation is straightforward, as for
+   instance, when the 3GPP managed functions run on monolithic, purpose-
+   specific network elements, in the way that the IP address attribute
+   from the EP_Transport IOC is the IP address of an interface of the
+   network element.  In this case, the information on EP_Transport IOC
+   can be directly passed to the IETF NSC through the NBI, even though
+   some additional information could be yet required, not being defined
+   yet on 3GPP specifications (e.g., the mask applicable to the IP
+   address field on EP_Transport).
+
+   However, there could be other cases where such a relationship is not
+   straightforward.  This could be the case of virtualized 3GPP managed
+   functions that could be instantiated on a general-purpose network
+   element.  In these other cases it is necessary to define additional
+   means for eliciting the endpoint at the CE side corresponding to the
+   endpoint of the 3GPP-related function.
+
+   With solely EP_Transport characterization in 3GPP, we could expect
+   the NS CE endpoint being identified by a combination of IP address
+   and some additional information such as vlan tag or SRv6 label that
+   could discriminate against a certain logical interface.  The next hop
+   router information is related to the next hop view from the
+   perspective of the 3GPP entity part of the slice, then providing
+   hints for determining the slice endpoint at the other side of the
+   slice service.  Finally, the QoS profile helps to determine
+   configurations needed at the PE side to respect the SLOs in the
+   connection between CEs slice endpoints.
+
+7.1.2  Mapping IETF NS CE to PE endpoints
+
+As described in [I-D.ietf-teas-ietf-network-slices], there are
+   different potential endpoint positions for an IETF NS.
+
+ 
+
+   The information that is passed to the IETF NSC in terms of endpoints
+   is the information relative to the CE position, which is the one
+   known by the slice customer.  From that information, the NSC needs to
+   infer the corresponding endpoint position at PE side, in order to
+   setup the desired connectivity constructs with the SLOs indicated in
+   the request.
+
+Being slice request technology-agnostic, the identification of the
+slice endpoints at the PE side should leverage on generic information
+   passed through the NBI to the IETF NSC.
+
+
+7.2 Network Slice Mapping in Control Plane
+
+7.3 Network Slice Mapping in Data Plane
+
+8.	Example of IETF Network Slice request through IETF Network Slice NBI
+
+9. Gpas
